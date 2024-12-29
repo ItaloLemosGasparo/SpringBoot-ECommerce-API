@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-public class EcomerceApiApplication {
-	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(EcomerceApiApplication.class, args);
+public class EcommerceApiApplication {
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(EcommerceApiApplication.class, args);
 
-	}
+    }
 }

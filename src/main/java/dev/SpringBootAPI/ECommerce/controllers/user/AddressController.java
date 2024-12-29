@@ -22,7 +22,7 @@ public class AddressController {
     //Create
     @PostMapping
     public ResponseEntity<AddressDTO> createAddress(@PathVariable UUID userId, @Valid @RequestBody Address address) {
-        return ResponseEntity.status(201).body(addressService.createAddress(userId, address));
+        return ResponseEntity.ok(addressService.createAddress(userId, address));
     }
     //
 
@@ -30,20 +30,15 @@ public class AddressController {
     @GetMapping
     public ResponseEntity<List<AddressDTO>> getAddressesByUserId(@PathVariable UUID userId) {
         List<AddressDTO> addressesDTOs = addressService.getAddressesByUserId(userId);
-
-        if (addressesDTOs.isEmpty())
-            return ResponseEntity.noContent().build();
-
-        return ResponseEntity.ok(addressesDTOs);
+        return addressesDTOs.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(addressesDTOs);
     }
     //
 
     //Update
     @PutMapping("/{addressId}")
     public ResponseEntity<AddressDTO> updateAddress(@PathVariable Integer addressId, @Valid @RequestBody AddressDTO updateAddressDTO) {
-        Optional<AddressDTO> existingAddressDTO = addressService.getAddressById(addressId);
-
-        return existingAddressDTO.map(addressDTO -> ResponseEntity.ok(addressService.updateAddress(addressDTO, updateAddressDTO)))
+        return addressService.getAddressById(addressId)
+                .map(addressDTO -> ResponseEntity.ok(addressService.updateAddress(updateAddressDTO)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
     //

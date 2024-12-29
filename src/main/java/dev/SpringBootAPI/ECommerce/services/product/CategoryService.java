@@ -8,7 +8,6 @@ import dev.SpringBootAPI.ECommerce.models.product.Category;
 import dev.SpringBootAPI.ECommerce.repositories.product.CategoryRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,37 +34,58 @@ public class CategoryService {
     //
 
     //Read
-
-    //
-
-    public List<CategoryDTO> getCategories() {
+    public List<CategoryDTO> findAll() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::toDto)
                 .toList();
     }
 
-    public List<CategoryDTO> getTopCategories() {
-        return categoryRepository.findByParentCategoryIsNull().stream()
-                .map(categoryMapper::toDto)
-                .toList();
+    public Optional<CategoryDTO> findById(Long categoryId) {
+        return categoryRepository.findById(categoryId).map(categoryMapper::toDto);
     }
 
-    public List<CategoryPathDTO> getCategoryPath(Long categoryId) {
-        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
-        return optionalCategory.map(category -> getCategoryPathIterative(category)).orElse(null);
+    public Optional<List<CategoryPathDTO>> getCategoryPath(Long categoryId) {
+        return categoryRepository.findById(categoryId).map(category -> getCategoryPathIterative(category));
     }
+    //
 
+    //UPDATE
+    public CategoryDTO updateCategory(CategoryDTO updatedCategoryDTO) {
+        Category category = categoryRepository.findById(updatedCategoryDTO.getId()).get();
+
+        if (updatedCategoryDTO.getName() != null)
+            category.setName(updatedCategoryDTO.getName());
+
+        if (updatedCategoryDTO.getIconUrl() != null)
+            category.setIconUrl(updatedCategoryDTO.getIconUrl());
+
+        if (updatedCategoryDTO.getParentId() != null)
+            category.setParentCategory(new Category(updatedCategoryDTO.getParentId()));
+
+        return categoryMapper.toDto(categoryRepository.save(category));
+    }
+    //
+
+    //DELETE
+    public void deleteCategory(Long categoryId) {
+        categoryRepository.saveAll(
+                categoryRepository.findByParentCategory_id(categoryId).stream()
+                        .peek(category -> category.setParentCategory(null))
+                        .toList()
+        );
+
+        categoryRepository.deleteById(categoryId);
+    }
+    //
+
+    //OTHERS
     private List<CategoryPathDTO> getCategoryPathIterative(Category category) {
         List<Category> categoryPath = new ArrayList<>();
         while (category != null) {
-            categoryPath.add(0, category); // Insere no início para construir o caminho da raiz à folha
+            categoryPath.add(0, category);
             category = category.getParentCategory();
         }
         return categoryPath.stream().map(categoryPathMapper::toDto).toList();
     }
-
-
-    public Optional<CategoryDTO> getCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId).map(categoryMapper::toDto);
-    }
+    //
 }

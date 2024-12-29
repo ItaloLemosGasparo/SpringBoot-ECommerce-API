@@ -7,12 +7,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "categories")
 public class Category {
+
+    public Category(Long id) {
+        this.setId(id);
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +38,6 @@ public class Category {
     @JoinColumn(name = "parent_id")
     private Category parentCategory;
 
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Category> subCategories = new ArrayList<>();
 }

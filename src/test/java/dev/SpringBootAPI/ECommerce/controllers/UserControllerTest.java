@@ -26,8 +26,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
@@ -89,7 +89,6 @@ class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value(userDTO.getName()))
                 .andExpect(jsonPath("$.email").value(userDTO.getEmail()))
-                .andExpect(jsonPath("$.cpf").value(userDTO.getCpf()))
                 .andExpect(jsonPath("$.userType").value(userDTO.getUserType()));
         //.andExpect(jsonPath("$.birthDate").value(userDTO.getBirthDate()));This shit don't want to work...
     }
@@ -120,7 +119,6 @@ class UserControllerTest {
         UserDTO userDTO = new UserDTO();
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
-        userDTO.setCpf(user.getCpf());
         userDTO.setBirthDate(user.getBirthDate());
         userDTO.setUserType(user.getUserType().getId());
         return userDTO;
