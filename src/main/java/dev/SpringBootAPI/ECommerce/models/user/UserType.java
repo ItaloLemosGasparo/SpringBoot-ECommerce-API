@@ -6,10 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-import javax.management.ConstructorParameters;
-import java.beans.ConstructorProperties;
 import java.util.List;
 
 @Data
@@ -38,5 +35,15 @@ public class UserType {
 
     public UserType(Integer id) {
         this.id = id;
+    }
+
+    public UserType(Integer id, String name) {
+        this(id);
+        this.name = name;
+    }
+
+    public UserType(Integer id, String name, String description) {
+        this(id, name);
+        this.description = description;
     }
 }

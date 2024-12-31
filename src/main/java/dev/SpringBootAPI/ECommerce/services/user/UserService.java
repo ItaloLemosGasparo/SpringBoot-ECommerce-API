@@ -51,8 +51,8 @@ public class UserService {
 
     //Update
     @Transactional
-    public UserDTO updateUser(UUID id, UserDTO updatedUserDTO) {
-        User existingUser = userRepository.findById(id).get();
+    public UserDTO updateUser(UserDTO updatedUserDTO) {
+        User existingUser = userRepository.findById(updatedUserDTO.getId()).get();
 
         if (updatedUserDTO.getName() != null)
             existingUser.setName(updatedUserDTO.getName());
@@ -71,6 +71,7 @@ public class UserService {
     public void updateUserPassword(UUID id, Password password) {
         User user = userRepository.findById(id).get();
         user.setPassword(passwordEncoder.encode(password.getPassword()));
+        userRepository.save(user);
     }
 
     public void inactiveActiveUser(UUID id) {
